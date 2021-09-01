@@ -10,9 +10,14 @@
         <footer>
         <!-- this is footer -->
         &copy; 2018 some dude in footer
+        <!-- old stuff usin spring security thymeleaf
             <span sec:authorize="isAuthenticated()">
                 | Logged user: <span sec:authentication="name"></span> |
                 Roles: <span sec:authentication="principal.authorities"></span> |
+                -->
+           <span th:if="${session.containsKey('user')}">
+                | Logged user: <span th:if="${session.containsKey('user')}" th:text="${session.user}"></span> |
+                Roles: <span th:if="${session.containsKey('roles')}" th:text="${session.roles}"></span> |
                 <a th:href="@{/logout}">Sign Out</a>
             </span>
 
