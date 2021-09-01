@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 /**
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import hello.mvc.entity.User;
 import hello.mvc.service.UserService;
@@ -95,44 +97,36 @@ public class DefaultController {
 	        return "/error/403";
 	    }
 	    
-	    
-	    
-	  //customize the error message
-		private String getErrorMessage(HttpServletRequest request, String key){
-		
-			Exception e = (Exception) request.getSession().getAttribute(key); 
-			String error = null;
-			try {
-				error = e.getMessage() ;
-			} catch (Exception ex) {
-				error = "Unknown System Error!";
-			}
-			
-			return error;
-		}
 		
 	   	 
 	    @RequestMapping(value = "/login", method = RequestMethod.GET)
 	    public String loginPage( @RequestParam(value = "error", required = false) String error,
 	    						@RequestParam(value = "logout", required = false) String logout, 
+	    						@RequestParam(value = "success", required = false) String success, 
 	    						HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 	    	
-	    	logger.debug("LoginPage error= " + error + " logout=" + logout);
+	    	logger.debug("GET: LoginPage {}:{}:{} " , error , logout, success);
 	    	
 	    	if (error != null) {
-	    		model.addAttribute("error", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
 	    		if (logger.isDebugEnabled())
-	    			logger.debug("Login page set error =" + model.get("error"));	    	    
+	    			logger.debug("GET: LoginPage set error message session:{}", request.getSession().getAttribute("error"));
+	    		model.addAttribute("error", request.getSession().getAttribute("error"));
 			}
 
 			if (logout != null) {
-				model.addAttribute("msg", "You've been logged out successfully.");
 				if (logger.isDebugEnabled())
-	    			logger.debug("Login page set logout =" + model.get("msg"));
+	    			logger.debug("GET: LoginPage set msg message");
+				model.addAttribute("msg", "You've been logged out successfully.");
 			}
 			
+			if (success != null) {
+				if (logger.isDebugEnabled())
+	    			logger.debug("GET: LoginPage set msg message");
+				model.addAttribute("msg", "login successfully.");
+			}
 	        return "/login";
 	    }
+	   
 	    
 	    @RequestMapping(value = "/login", method = RequestMethod.POST)
 	    public String loginPostPage( @RequestParam(value = "username", required = false) String username,
@@ -145,17 +139,15 @@ public class DefaultController {
 	    		User u = userService.getUserByUsernamePassword(username, password);
 	    		request.getSession().setAttribute("user", u.getUsername());
 	    		request.getSession().setAttribute("roles", u.getUserRole());
-	    		
-	    		return "/login";
+	    		model.addAttribute("msg", "You've been logged out successfully.");
+	    		//request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.FOUND);
+	    		return "redirect:/login?success";
 	    	} catch (Exception e) {
-	    		model.addAttribute("error", e);
-	    		model.addAttribute("msg", e);
-	    		request.getSession().setAttribute("error", e);
-	    		request.getSession().setAttribute("msg", e);
-	    		request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", e);
+	    		request.setAttribute("error", "Unable to login");
+	    		request.getSession().setAttribute("error", "Unable to login");
 	    		if (logger.isDebugEnabled())
-	    			logger.debug("Login page set error =" + model.get("error"));
-	    		
+	    			logger.debug("Login Post redirect:/login?error");
+	    		//request.setAttribute( View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.FOUND);
 	    		return "redirect:/login?error";
 	    	}
 	    	
