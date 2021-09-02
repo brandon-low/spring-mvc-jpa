@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Component
 @Order(1)
-@WebFilter(filterName = "simpleFilter", urlPatterns = "/*")
+@WebFilter(urlPatterns = "/*")
 public class SimpleFilter implements Filter {
 
 	private final static Logger log = LoggerFactory.getLogger(SimpleFilter.class);

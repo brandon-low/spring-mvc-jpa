@@ -35,6 +35,7 @@ import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
 
 
 //works with just @Configuration 
@@ -45,10 +46,12 @@ public class MvcWebConfig implements WebMvcConfigurer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MvcWebConfig.class);
 
+	@Autowired
+	ApplicationContext applicationContext;
   
    @Override
    public void addInterceptors(InterceptorRegistry registry) {
-	  logger.debug("****************Add Inceptor *************");
+	  logger.debug("****************Add Interceptor *************");
       ThemeChangeInterceptor themeChangeInterceptor = new ThemeChangeInterceptor();
       themeChangeInterceptor.setParamName("theme");
       registry.addInterceptor(themeChangeInterceptor);
@@ -61,37 +64,32 @@ public class MvcWebConfig implements WebMvcConfigurer {
    
    @Override
    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-       registry.addResourceHandler(
+	   registry.addResourceHandler(
               "/webjars/**",
     		   "/resources/**",
                "/img/**",
+               "/image/**",
                "/css/**",
                "/js/**")
                .addResourceLocations(
                       "classpath:/META-INF/resources/webjars/",
             		   "classpath:/resources/",
                        "classpath:/static/img/",
+                       "classpath:/static/image/",
                        "classpath:/static/css/",
                        "classpath:/static/js/");
-       /**  // old test stuff
-        	registry.addResourceHandler("/resources/**")
-        			.addResourceLocations("/resources/");
-   			registry.addResourceHandler("/**")
-   					.addResourceLocations("/resources/js/sw.js");
-        */
    }
    
    
-	@Bean("messageSource")
-	   public MessageSource messageSource() {
-			logger.debug("*****INIT MESSAGE SOURCE *******");
-	      ReloadableResourceBundleMessageSource messageSource=new ReloadableResourceBundleMessageSource();
-	      messageSource.setBasename("classpath:locale/messages");
-	      messageSource.setDefaultEncoding("UTF-8");
-	      messageSource.setUseCodeAsDefaultMessage(true);
-	      return messageSource;
-	   }
-
+   @Bean("messageSource")
+   public MessageSource messageSource() {
+	   logger.debug("*****INIT MESSAGE SOURCE *******");
+	   ReloadableResourceBundleMessageSource messageSource=new ReloadableResourceBundleMessageSource();
+	   messageSource.setBasename("classpath:locale/messages");
+	   messageSource.setDefaultEncoding("UTF-8");
+	   messageSource.setUseCodeAsDefaultMessage(true);
+	   return messageSource;
+	}
 	   
 	   @Bean(name = "validator")
 	   public LocalValidatorFactoryBean validator() {
@@ -124,26 +122,23 @@ public class MvcWebConfig implements WebMvcConfigurer {
 	       return lci;
 	   }
 	  
-	   
-	   @Autowired
-	   ApplicationContext applicationContext;
-	   
 	   //1. Creating SpringResourceTemplateResolver
 	   @Bean
 	   @Description("Thymeleaf Template Resolver")
-	   public SpringResourceTemplateResolver springTemplateResolver(){
-		   
+	   public SpringResourceTemplateResolver springTemplateResolver(){	   
 		   logger.debug("****************Init springTemplateResolver *************");
-		   
+		    
+		    // SpringResourceTemplateResolver automatically integrates with Spring's own
+		    // resource resolution infrastructure, which is highly recommended.
 	       SpringResourceTemplateResolver springTemplateResolver = new SpringResourceTemplateResolver();
 	       springTemplateResolver.setApplicationContext(this.applicationContext);
-	       
 	       springTemplateResolver.setPrefix("classpath:templates/");
 	       springTemplateResolver.setSuffix(".html");
-	       springTemplateResolver.setTemplateMode("HTML5");
+	       springTemplateResolver.setTemplateMode(TemplateMode.HTML);
 	       
-	       // default is true set to false
-	       //springTemplateResolver.setCacheable(false);
+	       // Template cache is true by default. Set to false if you want
+	       // templates to be automatically updated when modified.
+	       springTemplateResolver.setCacheable(true);
 	       
 	       return springTemplateResolver;
 	   }
@@ -152,13 +147,20 @@ public class MvcWebConfig implements WebMvcConfigurer {
 	   //2. Creating SpringTemplateEngine
 	   @Bean
 	   @Description("Thymeleaf Template Engine")
-	   public SpringTemplateEngine springTemplateEngine(){
-		   
+	   public SpringTemplateEngine springTemplateEngine(){		   
 		   logger.debug("****************Init springTemplateEngine *************");
-		   
+		   // SpringTemplateEngine automatically applies SpringStandardDialect and
+		    // enables Spring's own MessageSource message resolution mechanisms.
 	       SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
 	       springTemplateEngine.setTemplateResolver(springTemplateResolver());
 	       springTemplateEngine.setTemplateEngineMessageSource(messageSource());
+	       
+	       // Enabling the SpringEL compiler with Spring 4.2.4 or newer can
+	       // speed up execution in most scenarios, but might be incompatible
+	       // with specific cases when expressions in one template are reused
+	       // across different data types, so this flag is "false" by default
+	       // for safer backwards compatibility.
+	       springTemplateEngine.setEnableSpringELCompiler(true);
 	       return springTemplateEngine;
 	   }
 	   
@@ -166,13 +168,12 @@ public class MvcWebConfig implements WebMvcConfigurer {
 	   //3. Registering ThymeleafViewResolver
 	   @Bean
 	   @Description("Thymeleaf View Resolver")
-	   public ViewResolver viewResolver(){
-		   
+	   public ViewResolver viewResolver(){ 
 		   logger.debug("****************Init viewResolver *************");
-		   
 	       ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
 	       viewResolver.setTemplateEngine(springTemplateEngine());
 	       viewResolver.setOrder(1);
+	       viewResolver.setViewNames(new String[] {".html", ".xhtml"});
 	       return viewResolver;
 	   }
 	   

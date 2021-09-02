@@ -3,6 +3,7 @@ package hello.mvc.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -59,10 +60,11 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String username;		// email address
+	private String username;
 	private String password;
 	private boolean enabled;
-	
+	private Locale locale; 	//= Locale.US;	// default
+
 	private boolean accountNonExpired ; 
 	private boolean credentialsNonExpired;
 	private boolean accountNonLocked;  // if true, its not locked else false it means it is locked status
@@ -86,7 +88,6 @@ public class User implements Serializable {
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;
-	
 	}
 
 	public User(String username, String password, boolean enabled, Set<UserRole> userRole) {
@@ -96,7 +97,6 @@ public class User implements Serializable {
 		//this.userRole = userRole;
 	}
 
-	
 	public Long getId() {
 		return this.id;
 	}
@@ -199,6 +199,16 @@ public class User implements Serializable {
 		this.updateTimestamp = updateTimestamp;
 	}
 
+	public Locale getLocale() {
+		if (locale == null) {
+			return Locale.US;
+		}
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", enabled=" + enabled

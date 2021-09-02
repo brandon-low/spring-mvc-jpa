@@ -126,15 +126,12 @@ public class DefaultController {
 			}
 	        return "/login";
 	    }
-	   
-	    
+	     
 	    @RequestMapping(value = "/login", method = RequestMethod.POST)
 	    public String loginPostPage( @RequestParam(value = "username", required = false) String username,
 	    						@RequestParam(value = "password", required = false) String password, 
-	    						HttpServletRequest request, HttpServletResponse response, ModelMap model) {
-	    	
+	    						HttpServletRequest request, HttpServletResponse response, ModelMap model) {	
 	    	logger.debug("Login POST username {}:{} " , username , password);
-	    	
 	    	try {
 	    		User u = userService.getUserByUsernamePassword(username, password);
 	    		request.getSession().setAttribute("user", u.getUsername());
@@ -150,9 +147,6 @@ public class DefaultController {
 	    		//request.setAttribute( View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.FOUND);
 	    		return "redirect:/login?error";
 	    	}
-	    	
-	    	
-	        
 	    }
 	 
 	    @RequestMapping(value="/logout", method = RequestMethod.GET)
