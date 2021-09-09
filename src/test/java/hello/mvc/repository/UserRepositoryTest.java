@@ -1,5 +1,6 @@
 package hello.mvc.repository;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -49,7 +50,6 @@ public class UserRepositoryTest {
 	}
 	 
 	@Test
-	
 	public void testCustomQuery() {
 		log.debug("Custom Query Test");
 		/*
@@ -59,15 +59,37 @@ public class UserRepositoryTest {
 	            query.setParameter(1, rollNo);
 	     */
 		try {
+			entityManager.persist(new User("CCCgdhdh","Cisisi", true));
 			String queryString = "select u from User u";
 			Query query = entityManager.createQuery(queryString);
 			List<User[]> list = query.getResultList();
 			
-		//query.setParameter(queryString, query)
 			assertNotNull(list);
 		} catch (Exception e) {
 			fail(e);
 		}
+	}
+	
+	
+	@Test
+	public void testSaveUserPersistence() {
+		 User u1 = new User("AAA", "testyou", true);
+		 User u2 = new User("BBB", "testyou", true);
+		 
+		 List<User> users1 = userRepository.findAll();
+		 entityManager.persist(u1);
+		 entityManager.persist(u2);
+		 List<User> users2 = userRepository.findAll();
+		 assertTrue((users2.size() - users1.size()) == 2);
+		
+	}
+	@Test
+	public void testDeleteAll() {
+		entityManager.persist(new User("CCC","Cisisi", true));
+		entityManager.persist(new User("DDD","Cisisi", true));
+		assertTrue( (userRepository.findAll().size() > 0)) ;
+		userRepository.deleteAll();
+		assertTrue( (  userRepository.findAll() == null || userRepository.findAll().size() == 0)) ;
 	}
 		
 	@Test

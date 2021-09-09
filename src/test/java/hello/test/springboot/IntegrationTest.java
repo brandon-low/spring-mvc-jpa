@@ -68,30 +68,7 @@ public class IntegrationTest {
 		 assertEquals(u1.getUsername(), u.getUsername());
 		 assertEquals(u1.getPassword(), u.getPassword());
 		 
-		 /*
-		 assertThat(tutorial).hasFieldOrPropertyWithValue("title", "Tut title");
-		    assertThat(tutorial).hasFieldOrPropertyWithValue("description", "Tut desc");
-		    assertThat(tutorial).hasFieldOrPropertyWithValue("published", true);
-		    Tutorial tut2 = new Tutorial("Tut#2", "Desc#2", false);
-		    entityManager.persist(tut2);
-
-		    Tutorial tut3 = new Tutorial("Tut#3", "Desc#3", true);
-		    entityManager.persist(tut3);
-
-		    Iterable<Tutorial> tutorials = repository.findAll();
-
-		    assertThat(tutorials).hasSize(3).contains(tut1, tut2, tut3);
-		    assertThat(foundTutorial).isEqualTo(tut2);
-		    Iterable<Tutorial> tutorials = repository.findByPublished(true);
-
-		    assertThat(tutorials).hasSize(2).contains(tut1, tut3);
-		    entityManager.persist(new Tutorial("Tut#1", "Desc#1", true));
-		    entityManager.persist(new Tutorial("Tut#2", "Desc#2", false));
-
-		    repository.deleteAll();
-
-		    assertThat(repository.findAll()).isEmpty();
-		    */
+	
 	 }
 	
 	/*  // do
