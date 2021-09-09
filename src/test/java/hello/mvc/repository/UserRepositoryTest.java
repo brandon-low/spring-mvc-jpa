@@ -2,7 +2,11 @@ package hello.mvc.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
+import javax.sql.DataSource;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
@@ -28,15 +32,44 @@ import hello.mvc.entity.User;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE) // loks for application.properties for db connection
 public class UserRepositoryTest {
-	
-	  @Autowired
-	    EntityManager entityManager;
-
-		@Autowired
-		UserRepository userRepository;
-	
+		
 	private static final Logger log = LoggerFactory.getLogger(UserRepositoryTest.class);
+
+	@Autowired  DataSource dataSource;
+	@Autowired  EntityManager entityManager;
+	@Autowired	UserRepository userRepository;
 	
+	@Test
+	public void testInjectedComponentsAreNotNull(){
+		log.debug("**************testInjectedComponentsAreNotNull***************");
+		assertNotNull(dataSource);
+		//assertNotNull(jdbcTemplate);
+		assertNotNull(entityManager);
+		assertNotNull(userRepository);
+	}
+	 
+	@Test
+	
+	public void testCustomQuery() {
+		log.debug("Custom Query Test");
+		/*
+		 * TypedQuery<UserEntity> typedQuery
+		 String queryStr = "select id,name from users where roll_no = ?1";
+	     Query query = entityManager.createNativeQuery(queryStr);
+	            query.setParameter(1, rollNo);
+	     */
+		try {
+			String queryString = "select u from User u";
+			Query query = entityManager.createQuery(queryString);
+			List<User[]> list = query.getResultList();
+			
+		//query.setParameter(queryString, query)
+			assertNotNull(list);
+		} catch (Exception e) {
+			fail(e);
+		}
+	}
+		
 	@Test
 	public void testSaveUser() {
 		 log.debug("**************TestSaveUser***************");
