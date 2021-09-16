@@ -12,7 +12,90 @@ import org.springframework.context.annotation.Configuration;
 //})
 //@EnableTransactionManagement
 public class AppConfig {
+	
+	/*
+	 * spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.hibernate.show-sql=true
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=admin
+
+
+spring.datasource.initialization-mode=always
+spring.datasource.initialize=true
+spring.datasource.schema=classpath:/schema.sql
+spring.datasource.continue-on-error=true
+
+@Bean
+public DataSource dataSource() {
+    try {
+        final HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setJdbcUrl(url);
+        hikariConfig.setUsername(username);
+        hikariConfig.setPassword(password);
+
+        hikariConfig.setMaximumPoolSize(5);
+        hikariConfig.setConnectionTestQuery("SELECT 1");
+        hikariConfig.setPoolName("springHikariCP");
+
+        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
+
+        return new HikariDataSource(hikariConfig);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+Server server = null;
+            try {
+                server = Server.createTcpServer("-tcpAllowOthers").start();
+                Class.forName("org.h2.Driver");
+                Connection conn = DriverManager.
+                    getConnection("jdbc:h2:tcp://localhost/~/stackoverflow", "sa", "");
+                System.out.println("Connection Established: "
+                        + conn.getMetaData().getDatabaseProductName() + "/" + conn.getCatalog());
+             
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            @Bean(initMethod = "start", destroyMethod = "stop")
+    public Server h2Server() throws SQLException {
+        return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+    }
+    
+    @Bean
+public DataSource dataSource() throws SQLException {
+    DatabaseUtil.createSchemaIfNeeded("postgresql", databaseAddress, dbName, dbUser, dbPassword, dbSchemaName);
+    HikariConfig config = new HikariConfig();
+    if (ssl && Files.exists(Paths.get(certFile))) {
+        config.addDataSourceProperty("ssl", "true");
+        config.addDataSourceProperty("sslfactory", "org.postgresql.ssl.SingleCertValidatingFactory");
+        config.addDataSourceProperty("sslfactoryarg", "file://" + certFile);
+    }
+    if (nodeConfig.isNodeIdSpecified()) {
+        config.addDataSourceProperty("ApplicationName", nodeConfig.getId());
+    }
+    config.setDriverClassName("io.opentracing.contrib.jdbc.TracingDriver");
+    config.setJdbcUrl(String.format("jdbc:tracing:postgresql://%s/%s?currentSchema=%s", databaseAddress, dbName, dbSchemaName));
+    config.setUsername(dbUser);
+    config.setPassword(dbPassword);
+    config.setMaximumPoolSize(poolSize);
+    config.setMinimumIdle(minimumIdle);
+    config.setConnectionTimeout(SECONDS.toMillis(connectionTimeout));
+    config.setIdleTimeout(MINUTES.toMillis(idleTimeout));
+    return new HikariDataSource(config);
+}
+	 */
+	
 	// create bean etc
+	
+	
 	/*
 	@Bean(destroyMethod = "close")
     DataSource dataSource(Environment env) {

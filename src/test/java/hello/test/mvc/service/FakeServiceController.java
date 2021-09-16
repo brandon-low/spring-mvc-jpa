@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -37,6 +38,7 @@ public class FakeServiceController {
 
     @PostMapping("/starSign")
     public String getStarSign(@RequestBody String birthdayString) {
+    	//@RequestParam
         LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
         String sign = birthdayService.getStarSign(birthday);
         return sign;

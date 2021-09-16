@@ -27,7 +27,6 @@ import org.springframework.web.servlet.View;
 
 import hello.mvc.entity.User;
 import hello.mvc.service.UserService;
-import jdk.internal.org.jline.utils.Log;
 
 @Controller
 public class DefaultController {

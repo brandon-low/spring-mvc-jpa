@@ -1,6 +1,7 @@
 package hello.mvc.repository;
 
 
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -79,6 +80,7 @@ public class UserRepositoryTest {
 		 List<User> users1 = userRepository.findAll();
 		 entityManager.persist(u1);
 		 entityManager.persist(u2);
+		 
 		 List<User> users2 = userRepository.findAll();
 		 assertTrue((users2.size() - users1.size()) == 2);
 		
@@ -88,6 +90,7 @@ public class UserRepositoryTest {
 		entityManager.persist(new User("CCC","Cisisi", true));
 		entityManager.persist(new User("DDD","Cisisi", true));
 		assertTrue( (userRepository.findAll().size() > 0)) ;
+		
 		userRepository.deleteAll();
 		assertTrue( (  userRepository.findAll() == null || userRepository.findAll().size() == 0)) ;
 	}

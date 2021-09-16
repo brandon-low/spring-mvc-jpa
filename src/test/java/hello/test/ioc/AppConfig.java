@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("hello.test.ioc")
+@ComponentScan("hello.test")
 public class AppConfig {
 	 
 }
