@@ -1,6 +1,6 @@
-mvn clean test surefire-report:report-only site -DgenerateReports=false
+mvn clean mvn  -Dmaven.test.failure.ignore=true  test   surefire-report:report-only site -DgenerateReports=false test surefire-report:report-only site -DgenerateReports=false
 
-mvn  test surefire-report:report-only site -DgenerateReports=false
+mvn  mvn  -Dmaven.test.failure.ignore=true  test   surefire-report:report-only site -DgenerateReports=false test surefire-report:report-only site -DgenerateReports=false
 
 result in target/site
 # Run tests and generate .xml reports
